@@ -17,7 +17,8 @@ public class Order {
     private Long id;
     private Long userId;
     @Getter
-    private OrderType orderType; // "buy" or "sell"
+    @Enumerated(EnumType.STRING)
+    private OrderType orderType; // "BUY" or "SELL"
     @Setter
     @Getter
     private double amount;
