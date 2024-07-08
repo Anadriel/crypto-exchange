@@ -28,6 +28,7 @@ public class Order {
     @Getter
     private String quoteCurrency;
     @Setter
+    @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
     //Constructors
