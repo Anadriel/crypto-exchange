@@ -38,6 +38,7 @@ public class OrderBookService {
                 OrderStatus.PLACED
         );
         Order savedOrder = orderRepository.save(order);
+        log.info("Order with id '{}' was saved", order);
 
         // Try to match the order
         matchOrder(order);
@@ -46,6 +47,7 @@ public class OrderBookService {
     }
 
     private void matchOrder(Order order) {
+        log.info("Matching order with id '{}' started", order.getId());
         List<Order> matchingOrders = orderRepository.findMatchingOrders(
                 order.getOrderType() == OrderType.BUY ? OrderType.SELL : OrderType.BUY,
                 order.getBaseCurrency(),
@@ -67,6 +69,7 @@ public class OrderBookService {
                 break;
             }
         }
+        log.info("Matching order with id '{}' finished", order.getId());
     }
 
     private void publishMatchEvent(Order currentOrder, Order matchingOrder, double matchedAmount) {
