@@ -26,21 +26,23 @@ public class OrderBookService {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    public void placeOrder(OrderRequest orderRequest) {
+    public Order placeOrder(OrderRequest orderRequest) {
         // Save to order book
         Order order = new Order(
-            orderRequest.getUserId(),
-            orderRequest.getOrderType(),
-            orderRequest.getAmount(),
-            orderRequest.getPrice(),
-            orderRequest.getBaseCurrency(),
-            orderRequest.getQuoteCurrency(),
-            OrderStatus.PLACED
+                orderRequest.getUserId(),
+                orderRequest.getOrderType(),
+                orderRequest.getAmount(),
+                orderRequest.getPrice(),
+                orderRequest.getBaseCurrency(),
+                orderRequest.getQuoteCurrency(),
+                OrderStatus.PLACED
         );
-        orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
 
         // Try to match the order
         matchOrder(order);
+
+        return savedOrder;
     }
 
     private void matchOrder(Order order) {

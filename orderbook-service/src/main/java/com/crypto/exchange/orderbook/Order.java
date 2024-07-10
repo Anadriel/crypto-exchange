@@ -7,26 +7,23 @@ import com.crypto.exchange.models.OrderType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
+@Getter
+@ToString
 @Entity
 @Table(name = "`order`")
 public class Order {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
-    @Getter
     @Enumerated(EnumType.STRING)
     private OrderType orderType; // "BUY" or "SELL"
     @Setter
-    @Getter
     private double amount;
-    @Getter
     private double price;
-    @Getter
     private String baseCurrency;
-    @Getter
     private String quoteCurrency;
     @Setter
     @Enumerated(EnumType.STRING)
