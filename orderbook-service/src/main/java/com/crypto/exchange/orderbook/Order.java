@@ -52,8 +52,19 @@ public class Order {
         this.status = status;
     }
 
-    //Compose MatchedOrder from Order
+    //Create object's copy
+    public Order(Order another) {
+        this.id = another.id;
+        this.userId = another.userId;
+        this.orderType = another.orderType;
+        this.amount = another.amount;
+        this.price = another.price;
+        this.baseCurrency = another.baseCurrency;
+        this.quoteCurrency = another.quoteCurrency;
+        this.status = another.status;
+    }
 
+    //Compose MatchedOrder from Order
     public MatchedOrder toMatchedOrder() {
         return new MatchedOrder(id, userId, orderType);
     }

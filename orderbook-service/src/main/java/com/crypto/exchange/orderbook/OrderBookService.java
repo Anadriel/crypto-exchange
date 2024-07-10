@@ -37,8 +37,11 @@ public class OrderBookService {
                 orderRequest.getQuoteCurrency(),
                 OrderStatus.PLACED
         );
-        Order savedOrder = orderRepository.save(order);
+        orderRepository.save(order);
         log.info("Order with id '{}' was saved", order);
+
+        //Make a copy of newly created order for returning
+        Order savedOrder = new Order(order);
 
         // Try to match the order
         matchOrder(order);
