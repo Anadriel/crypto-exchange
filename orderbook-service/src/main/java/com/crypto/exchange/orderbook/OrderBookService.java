@@ -64,8 +64,8 @@ public class OrderBookService {
             publishMatchEvent(order, matchingOrder, matchedAmount);
 
             // Update order statuses
-            updateOrderStatus(order, matchedAmount);
-            updateOrderStatus(matchingOrder, matchedAmount);
+            updateOrderStatusAndAmount(order, matchedAmount);
+            updateOrderStatusAndAmount(matchingOrder, matchedAmount);
 
             // If the order is fully matched, break out of the loop
             if (order.getAmount() == 0) {
@@ -87,7 +87,7 @@ public class OrderBookService {
         rabbitTemplate.convertAndSend(orderQueue.getName(), ordersMatched);
     }
 
-    private void updateOrderStatus(Order order, double matchedAmount) {
+    private void updateOrderStatusAndAmount(Order order, double matchedAmount) {
         order.setAmount(order.getAmount() - matchedAmount);
         if (order.getAmount() == 0) {
             order.setStatus(OrderStatus.COMPLETED);
