@@ -65,8 +65,14 @@ public class OrderBookService {
                 .forEachOrdered(matchingOrder -> {
                     double matchedAmount = Math.min(order.getAmount(), matchingOrder.getAmount());
 
+                    log.info("Orders '{}' and '{}' are matched with amount '{}' and getting updated in DB",
+                            order.getId(), matchingOrder.getId(), matchedAmount);
+
                     // Update orders
                     updateOrders(order, matchingOrder, matchedAmount);
+
+                    log.info("Event about matching orders '{}' and '{}' is publishing",
+                            order.getId(), matchingOrder.getId());
 
                     // Publish match event to RabbitMQ
                     publishMatchEvent(order, matchingOrder, matchedAmount);
