@@ -78,7 +78,7 @@ public class OrderBookService {
     private void publishMatchEvent(Order currentOrder, Order matchingOrder, double matchedAmount) {
         OrdersMatched ordersMatched = new OrdersMatched(
             matchedAmount,
-            currentOrder.getPrice(),
+            matchingOrder.getPrice(),
             currentOrder.getBaseCurrency(),
             currentOrder.getQuoteCurrency(),
             Arrays.asList(currentOrder.toMatchedOrder(), matchingOrder.toMatchedOrder())

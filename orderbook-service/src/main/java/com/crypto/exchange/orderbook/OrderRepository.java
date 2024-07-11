@@ -12,7 +12,8 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Query("SELECT o FROM Order o WHERE o.orderType = :orderType AND o.baseCurrency = :baseCurrency " +
-             "AND o.quoteCurrency = :quoteCurrency AND o.price = :price AND o.status IN ('PLACED', 'PARTIAL')")
+            "AND o.quoteCurrency = :quoteCurrency AND o.status IN ('PLACED', 'PARTIAL') " +
+            "AND ((:orderType = 'SELL' AND o.price <= :price) OR (:orderType = 'BUY' AND o.price >= :price))")
     List<Order> findMatchingOrders(
             @Param("orderType") OrderType orderType,
             @Param("baseCurrency") String baseCurrency,
