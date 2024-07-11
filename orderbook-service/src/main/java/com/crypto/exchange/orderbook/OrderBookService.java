@@ -62,7 +62,7 @@ public class OrderBookService {
         matchingOrders
                 .stream()
                 .takeWhile(matchingOrder -> order.getAmount() > 0)
-                .forEach(matchingOrder -> {
+                .forEachOrdered(matchingOrder -> {
                     double matchedAmount = Math.min(order.getAmount(), matchingOrder.getAmount());
 
                     // Update orders
