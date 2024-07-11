@@ -61,11 +61,11 @@ public class OrderBookService {
         for (Order matchingOrder : matchingOrders) {
             double matchedAmount = Math.min(order.getAmount(), matchingOrder.getAmount());
 
-            // Publish match event to RabbitMQ
-            publishMatchEvent(order, matchingOrder, matchedAmount);
-
             // Update orders
             updateOrders(order, matchingOrder, matchedAmount);
+
+            // Publish match event to RabbitMQ
+            publishMatchEvent(order, matchingOrder, matchedAmount);
 
             // If the order is fully matched, break out of the loop
             if (order.getAmount() == 0) {
