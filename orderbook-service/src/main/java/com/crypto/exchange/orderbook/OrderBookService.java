@@ -56,22 +56,22 @@ public class OrderBookService {
                 order.getOrderType() == OrderType.BUY ? OrderType.SELL : OrderType.BUY,
                 order.getBaseCurrency(),
                 order.getQuoteCurrency(),
-                order.getPrice());
+                order.getPrice()
+        );
 
-        for (Order matchingOrder : matchingOrders) {
-            double matchedAmount = Math.min(order.getAmount(), matchingOrder.getAmount());
+        matchingOrders
+                .stream()
+                .takeWhile(matchingOrder -> order.getAmount() > 0)
+                .forEach(matchingOrder -> {
+                    double matchedAmount = Math.min(order.getAmount(), matchingOrder.getAmount());
 
-            // Update orders
-            updateOrders(order, matchingOrder, matchedAmount);
+                    // Update orders
+                    updateOrders(order, matchingOrder, matchedAmount);
 
-            // Publish match event to RabbitMQ
-            publishMatchEvent(order, matchingOrder, matchedAmount);
+                    // Publish match event to RabbitMQ
+                    publishMatchEvent(order, matchingOrder, matchedAmount);
+                });
 
-            // If the order is fully matched, break out of the loop
-            if (order.getAmount() == 0) {
-                break;
-            }
-        }
         log.info("Matching order with id '{}' finished", order.getId());
     }
 
