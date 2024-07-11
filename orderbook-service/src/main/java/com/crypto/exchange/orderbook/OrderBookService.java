@@ -9,6 +9,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.amqp.core.Queue;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -63,9 +64,8 @@ public class OrderBookService {
             // Publish match event to RabbitMQ
             publishMatchEvent(order, matchingOrder, matchedAmount);
 
-            // Update order statuses
-            updateOrderStatusAndAmount(order, matchedAmount);
-            updateOrderStatusAndAmount(matchingOrder, matchedAmount);
+            // Update orders
+            updateOrders(order, matchingOrder, matchedAmount);
 
             // If the order is fully matched, break out of the loop
             if (order.getAmount() == 0) {
@@ -95,5 +95,11 @@ public class OrderBookService {
             order.setStatus(OrderStatus.PARTIAL);
         }
         orderRepository.save(order);
+    }
+
+    @Transactional
+    private void updateOrders(Order currentOrder, Order matchingOrder, double matchedAmount) {
+        updateOrderStatusAndAmount(currentOrder, matchedAmount);
+        updateOrderStatusAndAmount(matchingOrder, matchedAmount);
     }
 }
