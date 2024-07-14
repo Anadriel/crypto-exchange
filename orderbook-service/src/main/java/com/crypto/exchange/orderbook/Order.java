@@ -1,6 +1,5 @@
 package com.crypto.exchange.orderbook;
 
-import com.crypto.exchange.models.MatchedOrder;
 import com.crypto.exchange.models.OrderStatus;
 import com.crypto.exchange.models.OrderType;
 
@@ -62,10 +61,5 @@ public class Order {
         this.baseCurrency = another.baseCurrency;
         this.quoteCurrency = another.quoteCurrency;
         this.status = another.status;
-    }
-
-    //Compose MatchedOrder from Order
-    public MatchedOrder toMatchedOrder() {
-        return new MatchedOrder(id, userId, orderType);
     }
 }

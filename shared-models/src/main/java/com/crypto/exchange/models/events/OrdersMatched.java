@@ -1,11 +1,9 @@
 package com.crypto.exchange.models.events;
 
-import com.crypto.exchange.models.MatchedOrder;
 import lombok.Getter;
 import lombok.ToString;
 
 import java.io.Serializable;
-import java.util.List;
 
 @ToString
 @Getter

@@ -1,16 +1,11 @@
 package com.crypto.exchange.balance;
 
 import com.crypto.exchange.models.events.OrdersMatched;
-import com.crypto.exchange.models.MatchedOrder;
-import com.crypto.exchange.models.OrderType;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static org.mockito.Mockito.*;
 
@@ -27,11 +22,8 @@ public class BalanceServiceTest {
     public void testUpdateBalances() {
         MockitoAnnotations.openMocks(this);
 
-        MatchedOrder currentOrder = new MatchedOrder(1L, 1L, OrderType.BUY);
-        MatchedOrder matchingOrder = new MatchedOrder(2L, 2L, OrderType.SELL);
-
         OrdersMatched ordersMatched =
-            new OrdersMatched(currentOrder.getUserId(), matchingOrder.getUserId(), 10, 100, "BTC", "USD");
+            new OrdersMatched(1L, 2L, 10, 100, "BTC", "USD");
 
         Balance user1BaseBalance = new Balance(1L, "BTC", 100D);
         Balance user1QuoteBalance = new Balance(1L, "USD", 10000D);
