@@ -29,10 +29,9 @@ public class BalanceServiceTest {
 
         MatchedOrder currentOrder = new MatchedOrder(1L, 1L, OrderType.BUY);
         MatchedOrder matchingOrder = new MatchedOrder(2L, 2L, OrderType.SELL);
-        List<MatchedOrder> nestedOrders = Arrays.asList(currentOrder, matchingOrder);
 
         OrdersMatched ordersMatched =
-            new OrdersMatched(10, 100, "BTC", "USD", nestedOrders);
+            new OrdersMatched(currentOrder.getUserId(), matchingOrder.getUserId(), 10, 100, "BTC", "USD");
 
         Balance user1BaseBalance = new Balance(1L, "BTC", 100D);
         Balance user1QuoteBalance = new Balance(1L, "USD", 10000D);

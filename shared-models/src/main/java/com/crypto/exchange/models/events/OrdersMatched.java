@@ -10,11 +10,12 @@ import java.util.List;
 @ToString
 @Getter
 public class OrdersMatched implements Serializable {
+    private Long buyerUserId;
+    private Long sellerUserId;
     private double matchedAmount;
     private double price;
     private String baseCurrency;
     private String quoteCurrency;
-    private List<MatchedOrder> nestedOrders;
 
     //Constructors
 
@@ -22,17 +23,18 @@ public class OrdersMatched implements Serializable {
     }
 
     public OrdersMatched(
+        Long buyerUserId,
+        Long sellerUserId,
         double matchedAmount,
         double price,
         String baseCurrency,
-        String quoteCurrency,
-        List<MatchedOrder> nestedOrders
+        String quoteCurrency
     ) {
+        this.buyerUserId = buyerUserId;
+        this.sellerUserId = sellerUserId;
         this.matchedAmount = matchedAmount;
         this.price = price;
         this.baseCurrency = baseCurrency;
         this.quoteCurrency = quoteCurrency;
-        this.nestedOrders = nestedOrders;
     }
-
 }

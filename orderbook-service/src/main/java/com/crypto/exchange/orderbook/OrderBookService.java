@@ -2,6 +2,7 @@ package com.crypto.exchange.orderbook;
 
 import com.crypto.exchange.models.OrderRequest;
 import com.crypto.exchange.models.OrderStatus;
+import com.crypto.exchange.models.Tuple;
 import com.crypto.exchange.models.events.OrdersMatched;
 import com.crypto.exchange.models.OrderType;
 import lombok.extern.slf4j.Slf4j;
@@ -82,12 +83,17 @@ public class OrderBookService {
     }
 
     private void publishMatchEvent(Order currentOrder, Order matchingOrder, double matchedAmount) {
+        Tuple<Long, Long> buyerUserIdAndSellerUserId = switch (currentOrder.getOrderType()) {
+            case BUY -> new Tuple<>(currentOrder.getUserId(), matchingOrder.getUserId());
+            case SELL -> new Tuple<>(matchingOrder.getUserId(), currentOrder.getUserId());
+        };
         OrdersMatched ordersMatched = new OrdersMatched(
+            buyerUserIdAndSellerUserId.x,
+            buyerUserIdAndSellerUserId.y,
             matchedAmount,
             matchingOrder.getPrice(),
             currentOrder.getBaseCurrency(),
-            currentOrder.getQuoteCurrency(),
-            Arrays.asList(currentOrder.toMatchedOrder(), matchingOrder.toMatchedOrder())
+            currentOrder.getQuoteCurrency()
         );
         log.info("Sending OrdersMatched event: '{}'", ordersMatched);
         rabbitTemplate.convertAndSend(orderQueue.getName(), ordersMatched);

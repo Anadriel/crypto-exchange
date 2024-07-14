@@ -1,8 +1,6 @@
 package com.crypto.exchange.balance;
 
 import com.crypto.exchange.models.events.OrdersMatched;
-import com.crypto.exchange.models.MatchedOrder;
-import com.crypto.exchange.models.Tuple;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -20,41 +18,63 @@ public class BalanceService {
     @Autowired
     private BalanceRepository balanceRepository;
 
-    private static Tuple<String, Double> getCurrencyAndAmount(MatchedOrder matchedOrder, OrdersMatched ordersMatched, boolean increasing) {
-        Tuple<String, Double> quoteCurrencyAndAmount = new Tuple<>(ordersMatched.getQuoteCurrency(), ordersMatched.getMatchedAmount() * ordersMatched.getPrice());
-        Tuple<String, Double> baseCurrencyAndAmount = new Tuple<>(ordersMatched.getBaseCurrency(), ordersMatched.getMatchedAmount());
-        return switch (matchedOrder.getOrderType()) {
-            case SELL -> increasing ? quoteCurrencyAndAmount : baseCurrencyAndAmount;
-            case BUY -> increasing ? baseCurrencyAndAmount : quoteCurrencyAndAmount;
-        };
-    }
-
     @Transactional
     public void updateBalances(OrdersMatched ordersMatched) {
 
-        for (MatchedOrder matchedOrder : ordersMatched.getNestedOrders()) {
+        //TODO: Think about OrdersMatched validation here
 
-            Tuple<String, Double> decreasingCurrencyAndAmount = getCurrencyAndAmount(matchedOrder, ordersMatched, false);
-            Balance decreasingBalance = balanceRepository.findByUserIdAndCurrency(matchedOrder.getUserId(), decreasingCurrencyAndAmount.x);
-            if (decreasingBalance != null) {
-                decreasingBalance.setAmount(decreasingBalance.getAmount() - decreasingCurrencyAndAmount.y);
-                balanceRepository.save(decreasingBalance);
-            }
+        double quoteCurrencyAmount = ordersMatched.getMatchedAmount() * ordersMatched.getPrice();
 
-            Tuple<String, Double> increasingCurrencyAndAmount = getCurrencyAndAmount(matchedOrder, ordersMatched, true);
-            Balance increasingBalance = balanceRepository.findByUserIdAndCurrency(matchedOrder.getUserId(), increasingCurrencyAndAmount.x);
-            if (increasingBalance != null) {
-                increasingBalance.setAmount(increasingBalance.getAmount() + increasingCurrencyAndAmount.y);
-                balanceRepository.save(increasingBalance);
-            }
+        //Credit amount in base currency to buyer
+        updateUserCurrencyBalance(
+                ordersMatched.getBuyerUserId(),
+                ordersMatched.getBaseCurrency(),
+                ordersMatched.getMatchedAmount()
+        );
+
+        //Charge amount in quote currency from buyer
+        updateUserCurrencyBalance(
+                ordersMatched.getBuyerUserId(),
+                ordersMatched.getQuoteCurrency(),
+                -quoteCurrencyAmount
+        );
+
+        //Credit amount in quote currency to seller
+        updateUserCurrencyBalance(
+                ordersMatched.getSellerUserId(),
+                ordersMatched.getQuoteCurrency(),
+                quoteCurrencyAmount
+        );
+
+        //Charge amount in base currency from seller
+        updateUserCurrencyBalance(
+                ordersMatched.getSellerUserId(),
+                ordersMatched.getBaseCurrency(),
+                -ordersMatched.getMatchedAmount()
+        );
+    }
+
+    public void updateUserCurrencyBalance(Long userId, String currency, Double amountChange) {
+        Balance balance = balanceRepository.findByUserIdAndCurrency(userId, currency);
+        double newBalance = balance.getAmount() + amountChange;
+        if (newBalance < 0) {
+            throw new RuntimeException("System entered undetermined state because: " +
+                    "user balance becomes negative after balance adjustment");
         }
-
+        balance.setAmount(newBalance);
+        balanceRepository.save(balance);
     }
 
     @RabbitListener(queues = "#{orderQueue.name}")
     public void receiveMatchEvent(OrdersMatched ordersMatched) {
         log.info("Received: '{}'", ordersMatched);
-        updateBalances(ordersMatched);
+        try {
+            updateBalances(ordersMatched);
+            //TODO: Implement more specific error handler
+        } catch (Exception e) {
+            log.error("OrdersMatched event handling failed with: '{}'", e.getMessage());
+            //TODO: Implement undelivered messages handling (separate db or queue)
+        }
     }
 
     public Balance getBalance(Long userId) {
