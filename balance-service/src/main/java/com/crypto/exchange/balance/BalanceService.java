@@ -59,9 +59,12 @@ public class BalanceService {
     public void updateUserCurrencyBalance(Long userId, String currency, Double amountChange) {
         log.info("Finding balance in '{}' for user '{}'", currency, userId);
         Balance balance = balanceRepository.findByUserIdAndCurrency(userId, currency);
+
         if (balance == null) {
-            throw new RuntimeException("Balance in " + currency + " for user " + userId + " was not found");
+            log.info("Balance in '{}' for user '{}' was not found. Create a new one with amount 0.0", currency, userId);
+            balance = new Balance(userId, currency, 0.0D);
         }
+
         double newBalance = balance.getAmount() + amountChange;
         if (newBalance < 0) {
             throw new RuntimeException("System entered undetermined state because: " +
