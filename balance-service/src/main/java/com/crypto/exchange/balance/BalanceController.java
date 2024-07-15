@@ -45,11 +45,10 @@ public class BalanceController {
 
     public ResponseEntity<?> updateBalance(long userId, String currency, double amount, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            HttpStatusCode statusCode = HttpStatus.BAD_REQUEST;
             List<String> messages = bindingResult.getAllErrors().stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
-            ErrorResponse errorResponse = new ErrorResponse(statusCode.value(), messages);
-            return ResponseEntity.status(statusCode).body(errorResponse);
+            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), messages);
+            return errorResponse.toResponseEntity();
         }
 
         try {
@@ -57,11 +56,10 @@ public class BalanceController {
             log.info("Balance was updated: '{}'", balance);
             return ResponseEntity.status(HttpStatus.OK).body(balance);
         } catch (RuntimeException e) {
-            HttpStatusCode statusCode = HttpStatus.BAD_REQUEST;
             String errorMessage = e.getMessage();
-            log.error("Balance updating failed with: '{}'", e.getMessage());
-            ErrorResponse errorResponse = new ErrorResponse(statusCode.value(), errorMessage);
-            return ResponseEntity.status(statusCode).body(errorResponse);
+            log.error("Balance updating failed with: '{}'", errorMessage);
+            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), errorMessage);
+            return errorResponse.toResponseEntity();
         }
     }
 }

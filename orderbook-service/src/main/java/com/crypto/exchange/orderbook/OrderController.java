@@ -24,11 +24,10 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<?> placeOrder(@Valid @RequestBody OrderRequest orderRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            HttpStatusCode statusCode = HttpStatus.BAD_REQUEST;
             List<String> messages = bindingResult.getAllErrors().stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
-            ErrorResponse errorResponse = new ErrorResponse(statusCode.value(), messages);
-            return ResponseEntity.status(statusCode).body(errorResponse);
+            ErrorResponse errorResponse = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), messages);
+            return errorResponse.toResponseEntity();
         }
 
         Order order = orderBookService.placeOrder(orderRequest);

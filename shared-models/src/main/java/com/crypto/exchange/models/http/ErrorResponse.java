@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+
 import lombok.Getter;
 
 @Getter
@@ -22,5 +24,9 @@ public class ErrorResponse implements Serializable {
     public ErrorResponse(int statusCode, String message) {
         this.statusCode = statusCode;
         this.messages = Collections.singletonList(message);
+    }
+
+    public ResponseEntity<ErrorResponse> toResponseEntity() {
+        return ResponseEntity.status(statusCode).body(this);
     }
 }
