@@ -51,7 +51,7 @@ public class BalanceService {
         );
     }
 
-    public void updateUserCurrencyBalance(Long userId, String currency, Double amountChange) {
+    public Balance updateUserCurrencyBalance(Long userId, String currency, Double amountChange) {
         log.info("Finding balance in '{}' for user '{}'", currency, userId);
         Balance balance = balanceRepository.findByUserIdAndCurrency(userId, currency);
 
@@ -62,13 +62,13 @@ public class BalanceService {
 
         double newBalance = balance.getAmount() + amountChange;
         if (newBalance < 0) {
-            throw new RuntimeException("System entered undetermined state because: " +
-                    "user balance becomes negative after balance adjustment");
+            throw new RuntimeException("Insufficient funds");
         }
         log.info("Updating balance in '{}' of user '{}' for '{}' units", currency, userId, amountChange);
         balance.setAmount(newBalance);
         balanceRepository.save(balance);
         log.info("Balance in '{}' of user '{}' for '{}' units was updated", currency, userId, amountChange);
+        return balance;
     }
 
     public List<Balance> getBalances(Long userId) {
