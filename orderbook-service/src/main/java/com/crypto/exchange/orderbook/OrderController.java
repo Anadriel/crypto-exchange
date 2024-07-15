@@ -1,7 +1,7 @@
 package com.crypto.exchange.orderbook;
 
-import com.crypto.exchange.models.ErrorResponse;
-import com.crypto.exchange.models.OrderRequest;
+import com.crypto.exchange.models.http.ErrorResponse;
+import com.crypto.exchange.models.http.OrderRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

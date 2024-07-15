@@ -1,6 +1,6 @@
 package com.crypto.exchange.orderbook.exception;
 
-import com.crypto.exchange.models.ErrorResponse;
+import com.crypto.exchange.models.http.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;

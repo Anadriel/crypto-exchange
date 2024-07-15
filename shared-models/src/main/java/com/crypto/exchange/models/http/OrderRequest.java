@@ -1,5 +1,6 @@
-package com.crypto.exchange.models;
+package com.crypto.exchange.models.http;
 
+import com.crypto.exchange.models.OrderType;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 

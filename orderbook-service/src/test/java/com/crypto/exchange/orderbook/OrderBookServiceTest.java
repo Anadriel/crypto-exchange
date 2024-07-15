@@ -1,6 +1,6 @@
 package com.crypto.exchange.orderbook;
 
-import com.crypto.exchange.models.OrderRequest;
+import com.crypto.exchange.models.http.OrderRequest;
 import com.crypto.exchange.models.OrderType;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

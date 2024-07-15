@@ -1,6 +1,6 @@
 package com.crypto.exchange.orderbook;
 
-import com.crypto.exchange.models.OrderRequest;
+import com.crypto.exchange.models.http.OrderRequest;
 import com.crypto.exchange.models.OrderStatus;
 import com.crypto.exchange.models.Tuple;
 import com.crypto.exchange.models.events.OrdersMatched;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.amqp.core.Queue;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
