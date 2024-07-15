@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
+@Getter
 public class Balance {
 
     @Id
@@ -15,7 +16,6 @@ public class Balance {
     private Long id;
     private Long userId;
     private String currency;
-    @Getter
     @Setter
     private Double amount;
 

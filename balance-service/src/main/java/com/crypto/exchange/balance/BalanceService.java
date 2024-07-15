@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Slf4j
 @Service
 public class BalanceService {
@@ -83,8 +85,8 @@ public class BalanceService {
         }
     }
 
-    public Balance getBalance(Long userId) {
-        // Fetch balance logic for the user
+    public List<Balance> getBalances(Long userId) {
+        // Fetch all existed balances for the user
         return balanceRepository.findByUserId(userId);
     }
 }
