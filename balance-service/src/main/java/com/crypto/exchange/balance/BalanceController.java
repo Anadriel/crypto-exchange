@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +28,7 @@ public class BalanceController {
 
     @PostMapping("/deposit")
     public ResponseEntity<?> deposit(@Valid @RequestBody BalanceRequest balanceRequest, BindingResult bindingResult) {
-        log.info("Get deposit request: '{}'", balanceRequest);
+        log.info("Deposit request was gotten: '{}'", balanceRequest);
         return updateBalance(
                 balanceRequest.getUserId(),
                 balanceRequest.getCurrency(),
@@ -41,7 +40,7 @@ public class BalanceController {
 
     @PostMapping("/withdraw")
     public ResponseEntity<?> withdraw(@Valid @RequestBody BalanceRequest balanceRequest, BindingResult bindingResult) {
-        log.info("Get withdraw request: '{}'", balanceRequest);
+        log.info("Withdraw request was gotten: '{}'", balanceRequest);
         return updateBalance(
                 balanceRequest.getUserId(),
                 balanceRequest.getCurrency(),
