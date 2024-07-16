@@ -5,10 +5,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.io.Serializable;
 
 @Getter
+@ToString
 public class BalanceRequest implements Serializable {
     @NotNull(message = "User ID cannot be null")
     @Min(value = 1, message = "User ID must be greater than or equal to 1")
