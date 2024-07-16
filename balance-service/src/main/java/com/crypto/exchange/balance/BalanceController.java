@@ -31,7 +31,11 @@ public class BalanceController {
     public ResponseEntity<?> deposit(@Valid @RequestBody BalanceRequest balanceRequest, BindingResult bindingResult) {
         log.info("Get deposit request: '{}'", balanceRequest);
         return updateBalance(
-                balanceRequest.getUserId(), balanceRequest.getCurrency(), balanceRequest.getAmount(), bindingResult
+                balanceRequest.getUserId(),
+                balanceRequest.getCurrency(),
+                balanceRequest.getAmount(),
+                0,
+                bindingResult
         );
     }
 
@@ -39,11 +43,40 @@ public class BalanceController {
     public ResponseEntity<?> withdraw(@Valid @RequestBody BalanceRequest balanceRequest, BindingResult bindingResult) {
         log.info("Get withdraw request: '{}'", balanceRequest);
         return updateBalance(
-                balanceRequest.getUserId(), balanceRequest.getCurrency(), -balanceRequest.getAmount(), bindingResult
+                balanceRequest.getUserId(),
+                balanceRequest.getCurrency(),
+                -balanceRequest.getAmount(),
+                0,
+                bindingResult
         );
     }
 
-    public ResponseEntity<?> updateBalance(long userId, String currency, double amount, BindingResult bindingResult) {
+    @PostMapping("/reserve")
+    public ResponseEntity<?> reserve(@Valid @RequestBody BalanceRequest balanceRequest, BindingResult bindingResult) {
+        log.info("Reserve request was gotten: '{}'", balanceRequest);
+        return updateBalance(
+                balanceRequest.getUserId(),
+                balanceRequest.getCurrency(),
+                -balanceRequest.getAmount(),
+                balanceRequest.getAmount(),
+                bindingResult
+        );
+    }
+
+    @PostMapping("/release")
+    public ResponseEntity<?> release(@Valid @RequestBody BalanceRequest balanceRequest, BindingResult bindingResult) {
+        log.info("Release request was gotten: '{}'", balanceRequest);
+        return updateBalance(
+                balanceRequest.getUserId(),
+                balanceRequest.getCurrency(),
+                balanceRequest.getAmount(),
+                -balanceRequest.getAmount(),
+                bindingResult
+        );
+    }
+
+    public ResponseEntity<?> updateBalance(long userId, String currency,
+                                           double amount, double reservedAmount, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> messages = bindingResult.getAllErrors().stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
@@ -52,7 +85,7 @@ public class BalanceController {
         }
 
         try {
-            Balance balance = balanceService.updateUserCurrencyBalance(userId, currency, amount);
+            Balance balance = balanceService.updateUserCurrencyBalance(userId, currency, amount, reservedAmount);
             log.info("Balance was updated: '{}'", balance);
             return ResponseEntity.status(HttpStatus.OK).body(balance);
         } catch (RuntimeException e) {

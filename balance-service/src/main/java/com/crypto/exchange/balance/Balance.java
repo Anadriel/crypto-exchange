@@ -18,16 +18,19 @@ public class Balance {
     private String currency;
     @Setter
     private Double amount;
+    @Setter
+    private Double reservedAmount;
 
     //Constructors
 
     public Balance() {
     }
 
-    public Balance(Long userId, String currency, Double amount) {
+    public Balance(Long userId, String currency, Double amount, Double reservedAmount) {
         this.userId = userId;
         this.currency = currency;
         this.amount = amount;
+        this.reservedAmount = reservedAmount;
     }
 }
 

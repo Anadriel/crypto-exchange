@@ -25,11 +25,11 @@ public class BalanceServiceTest {
         OrdersMatched ordersMatched =
             new OrdersMatched(1L, 2L, 10, 100, "BTC", "USD");
 
-        Balance user1BaseBalance = new Balance(1L, "BTC", 100D);
-        Balance user1QuoteBalance = new Balance(1L, "USD", 10000D);
+        Balance user1BaseBalance = new Balance(1L, "BTC", 100D, 0D);
+        Balance user1QuoteBalance = new Balance(1L, "USD", 10000D, 0D);
 
-        Balance user2BaseBalance = new Balance(2L, "BTC", 100D);
-        Balance user2QuoteBalance = new Balance(2L, "USD", 10000D);
+        Balance user2BaseBalance = new Balance(2L, "BTC", 100D, 0D);
+        Balance user2QuoteBalance = new Balance(2L, "USD", 10000D, 0D);
 
         when(balanceRepository.findByUserIdAndCurrency(1L, "BTC")).thenReturn(user1BaseBalance);
         when(balanceRepository.findByUserIdAndCurrency(1L, "USD")).thenReturn(user1QuoteBalance);
