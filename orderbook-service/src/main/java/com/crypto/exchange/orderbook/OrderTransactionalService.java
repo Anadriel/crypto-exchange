@@ -29,7 +29,7 @@ public class OrderTransactionalService {
                 OrderStatus.PLACED
         );
         orderRepository.save(order);
-        log.info("Order with id '{}' was saved", order);
+        log.info("'{}' was saved", order);
 
         return order;
     }
